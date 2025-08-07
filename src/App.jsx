@@ -1,37 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import HowItWorks from './components/HowItWorks';
+import ContactUs from './components/ContactUs';
+import Footer from './components/Footer';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import { usePageTitle } from './hooks/usePageTitle';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Home page component
+const HomePage = () => {
+  usePageTitle('GitDeploy - Deploy Git Repositories Instantly');
+  return (
+    <>
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <ContactUs />
+      <Footer />
+    </>
+  );
+};
+
+// Layout component to conditionally render Navbar
+const Layout = () => {
+  const location = useLocation();
+  const hideNavbar = ['/signin', '/signup'].includes(location.pathname);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <div className="flex space-x-8 mb-8">
-        <a href="https://vite.dev" target="_blank" className="hover:opacity-80 transition-opacity">
-          <img src={viteLogo} className="h-24 w-24" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" className="hover:opacity-80 transition-opacity">
-          <img src={reactLogo} className="h-24 w-24 animate-spin" alt="React logo" />
-        </a>
-      </div>
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">Vite + React</h1>
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <button 
-          onClick={() => setCount((count) => count + 1)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200 mb-4"
-        >
-          count is {count}
-        </button>
-        <p className="text-gray-600">
-          Edit <code className="bg-gray-100 px-2 py-1 rounded text-sm">src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="mt-8 text-gray-500 text-sm">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="min-h-screen">
+      {!hideNavbar && <Navbar />}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
     </div>
-  )
-}
+  );
+};
 
-export default App
+const App = () => {
+  return (
+    <Router>
+      <Layout />
+    </Router>
+  );
+};
+
+export default App;
